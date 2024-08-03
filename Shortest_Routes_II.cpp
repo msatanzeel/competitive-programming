@@ -81,24 +81,13 @@ void _print(T t, V... v)
 
 //*************************************************************************************
 
-void solve()
+vector<ll> calc_distances(vector<vector<pair<int, int>>> &adj, int ind, int n)
 {
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<pair<int, int>>> adj(n + 1);
-    while (m--)
-    {
-        int u, v, w;
-        cin >> u >> v >> w;
-        adj[u].push_back({v, w});
-    }
-
     const ll INF = 1e18;
     vector<ll> dist(n + 1, INF);
-    dist[1] = 0;
+    dist[ind] = 0;
     priority_queue<pll, vector<pll>, greater<pll>> pq;
-    pq.push({0, 1});
+    pq.push({0, ind});
 
     while (!pq.empty())
     {
@@ -120,9 +109,35 @@ void solve()
         }
     }
 
-    loopf(i, 1, n + 1)
-            cout
-        << dist[i] << " ";
+    return dist;
+}
+
+void solve()
+{
+    int n, m, q;
+    cin >> n >> m >> q;
+
+    vector<vector<pair<int, int>>> adj(n + 1);
+    while (m--)
+    {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w});
+    }
+
+    map<int, vector<ll>> ans;
+    loopf(i,1,n+1)
+    {
+        ans[i] = calc_distances(adj, i, n);
+    }
+
+    while (q--)
+    {
+        int a, b;
+        cin >> a >> b;
+        cout << (ans[a][b] == (ll)1e18 ? -1 : ans[a][b]) << endl;
+    }
 }
 
 int main()
